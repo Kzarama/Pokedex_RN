@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { FlatList, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,9 +10,11 @@ import { globalTheme } from "../config/theme/global-theme";
 
 export default function Home() {
 	const { top } = useSafeAreaInsets();
-	const { data: pokemons, isLoading } = useQuery({
-		queryKey: ["pokemons"],
-		queryFn: () => getPokemons(0),
+	const { data, isLoading, fetchNextPage } = useInfiniteQuery({
+		queryKey: ["pokemons", "infinite"],
+		initialPageParam: 0,
+		queryFn: (params) => getPokemons(params.pageParam),
+		getNextPageParam: (lastPage, pages) => pages.length,
 		staleTime: 1000 * 60 * 60,
 	});
 
@@ -21,12 +23,15 @@ export default function Home() {
 			<View style={globalTheme.globalMargin}>
 				<PokeballBg style={styles.imgPosition} />
 				<FlatList
-					data={pokemons}
+					data={data?.pages.flat() ?? []}
 					keyExtractor={({ id }, index) => `${id}-${index}`}
 					numColumns={2}
 					style={{ marginTop: top + 20 }}
 					ListHeaderComponent={() => <Text variant="displayMedium">Pokedex</Text>}
 					renderItem={({ item }) => <PokemonCard pokemon={item} />}
+					onEndReachedThreshold={0.6}
+					onEndReached={() => fetchNextPage()}
+					showsVerticalScrollIndicator={false}
 				/>
 			</View>
 		</ScreenLayout>
