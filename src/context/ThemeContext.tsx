@@ -1,5 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
+import { Appearance } from "react-native";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 
 interface ThemeContextType {
 	isDark: boolean;
@@ -19,11 +20,15 @@ export const useThemeContext = (): ThemeContextType => {
 };
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-	const [isDark, setIsDark] = useState(false);
+	const [isDark, setIsDark] = useState(Appearance.getColorScheme() === "dark");
 
 	const toggleTheme = () => setIsDark((prev) => !prev);
 
 	const theme = isDark ? MD3DarkTheme : MD3LightTheme;
 
-	return <ThemeContext.Provider value={{ isDark, toggleTheme, theme }}>{children}</ThemeContext.Provider>;
+	return (
+		<ThemeContext.Provider value={{ isDark, toggleTheme, theme }}>
+			<PaperProvider theme={theme}>{children}</PaperProvider>
+		</ThemeContext.Provider>
+	);
 };
