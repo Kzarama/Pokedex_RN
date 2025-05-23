@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
 		color: "white",
 		top: 10,
 		left: 10,
+		textShadowColor: "black",
+		textShadowOffset: { width: 0, height: 0 },
+		textShadowRadius: 8,
 	},
 
 	pokeball: {

@@ -5,7 +5,7 @@ import { PokeApiPokemon } from "../interfaces/pokeapi.interfaces";
 export const PokemonMapper = async (data: PokeApiPokemon): Promise<Pokemon> => {
 	const avatar = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`;
 	const sprites = getSprites(data);
-	const color = await getColorFromImage(avatar);
+	const color = (await getColorFromImage(avatar)) ?? "gray";
 
 	return {
 		id: data.id.toString(),

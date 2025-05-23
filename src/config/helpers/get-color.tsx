@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getColorFromImage(imageUrl: string): Promise<string> {
+export async function getColorFromImage(imageUrl: string): Promise<string | undefined> {
 	try {
 		const response = await axios.get(`https://api.microlink.io`, {
 			params: {
@@ -12,6 +12,6 @@ export async function getColorFromImage(imageUrl: string): Promise<string> {
 		return typeof color === "string" ? color : "";
 	} catch (error) {
 		console.error("Error getting color from image", error);
-		return "";
+		return undefined;
 	}
 }
