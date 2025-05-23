@@ -7,7 +7,7 @@ export const getPokemons = async (page: number, limit = 20): Promise<Pokemon[]> 
 	try {
 		const url = "/pokemon";
 
-		const { data } = await pokeApi<PokeAPIPaginatedResponse>(url, { params: { offset: page * 10, limit } });
+		const { data } = await pokeApi<PokeAPIPaginatedResponse>(url, { params: { offset: page * limit, limit } });
 		const pokemonPromises = data.results.map(({ url }) => pokeApi<PokeApiPokemon>(url));
 		const pokeApiPokemons = await Promise.all(pokemonPromises);
 

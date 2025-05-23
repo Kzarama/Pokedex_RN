@@ -8,12 +8,16 @@ export const PokemonMapper = async (data: PokeApiPokemon): Promise<Pokemon> => {
 	const color = await getColorFromImage(avatar);
 
 	return {
-		id: data.id,
+		id: data.id.toString(),
 		name: data.name,
 		avatar,
 		sprites,
 		types: data.types.map(({ type }) => type.name),
 		color,
+		games: data.game_indices.map(({ version }) => version.name),
+		stats: data.stats.map(({ stat, base_stat }) => ({ name: stat.name, value: base_stat })),
+		abilities: data.abilities.map(({ ability }) => ability?.name ?? ""),
+		moves: data.moves.map((move) => ({ name: move.move.name, level: move.version_group_details[0].level_learned_at })).sort((a, b) => a.level - b.level),
 	};
 };
 

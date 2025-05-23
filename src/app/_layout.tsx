@@ -10,8 +10,8 @@ export default function RootLayout() {
 			<ThemeProvider>
 				<Stack screenOptions={{ headerShown: false }}>
 					<Stack.Screen name="index" options={{ title: "Home" }} />
-					<Stack.Screen name="Pokemon" options={{ title: "Pokemon" }} />
-					<Stack.Screen name="Search" options={{ title: "Search" }} />
+					<Stack.Screen name="[pokemon]" options={{ title: "Pokemon" }} />
+					<Stack.Screen name="search" options={{ title: "Search" }} />
 				</Stack>
 			</ThemeProvider>
 		</QueryClientProvider>

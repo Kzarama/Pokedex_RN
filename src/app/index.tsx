@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { FlatList, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,12 +10,20 @@ import { globalTheme } from "../config/theme/global-theme";
 
 export default function Home() {
 	const { top } = useSafeAreaInsets();
-	const { data, isLoading, fetchNextPage } = useInfiniteQuery({
+
+	const queryClient = useQueryClient();
+	const { data, fetchNextPage } = useInfiniteQuery({
 		queryKey: ["pokemons", "infinite"],
 		initialPageParam: 0,
-		queryFn: (params) => getPokemons(params.pageParam),
-		getNextPageParam: (lastPage, pages) => pages.length,
 		staleTime: 1000 * 60 * 60,
+		queryFn: async (params) => {
+			const pokemons = await getPokemons(params.pageParam);
+			pokemons.map((pokemon) => {
+				queryClient.setQueryData(["pokemon", pokemon.id], pokemon);
+			});
+			return pokemons;
+		},
+		getNextPageParam: (_, pages) => pages.length,
 	});
 
 	return (
