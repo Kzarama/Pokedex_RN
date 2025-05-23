@@ -1,19 +1,20 @@
-import axios from "axios";
+import ImageColors from "react-native-image-colors";
 
-export async function getColorFromImage(imageUrl: string): Promise<string> {
-	console.log(imageUrl);
-	try {
-		const response = await axios.get(`https://api.microlink.io`, {
-			params: {
-				url: imageUrl,
-				palette: true,
-			},
-		});
+export const getColorFromImage = async (image: string) => {
+	const fallbackColor = "grey";
 
-		const color = response.data.data.image.palette[0];
-		return typeof color === "string" ? color : "";
-	} catch (error) {
-		console.error("Error getting color from image", error);
-		return "";
+	const colors = await ImageColors.getColors(image, {
+		fallback: fallbackColor,
+	});
+
+	switch (colors.platform) {
+		case "android":
+			return colors.dominant ?? fallbackColor;
+
+		case "ios":
+			return colors.background ?? fallbackColor;
+
+		default:
+			return fallbackColor;
 	}
-}
+};
